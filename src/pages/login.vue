@@ -18,7 +18,7 @@
               hoverable>
               <div class="logo">
                 <my-icon type="icon-GULULU-suanningmeng" />
-                简笔记
+                EasyNotes
               </div>
               <a-form
                 :form="form"
@@ -94,7 +94,9 @@
   export default {
     data() {
       return {
-        loading: false
+        publicPath: process.env.BASE_URL,
+        loading: false,
+        files: []
       };
     },
     computed:{
@@ -102,8 +104,10 @@
             // 计算body可用高度
             let cHeight = window.outerHeight - (window.outerHeight - window.innerHeight)
             // 计算背景图
-            let imgs = ["http://resource.zealon.cn/01.jpg","http://resource.zealon.cn/02.jpg","http://resource.zealon.cn/03.jpg"]
-            let imgName = imgs[Math.floor(Math.random() * 3)]
+            //let imgs = ["http://resource.zealon.cn/01.jpg","http://resource.zealon.cn/02.jpg","http://resource.zealon.cn/03.jpg"]
+            //let imgs = ["/img/01.jpg","/img/02.jpg","/img/03.jpg"]
+            //let imgName = imgs[Math.floor(Math.random() * 3)]
+            let imgName=this.getFileName()
             let style = "background-image:url('" + imgName + "'); background-repeat: round; height:" + cHeight + "px;";
             return style
         }
@@ -119,6 +123,10 @@
       }
     },
     methods: {
+    getFileName(){
+        return '/img/'+Math.floor(Math.random()*12 + 1)+'.jpg';
+    },  
+
       handleSubmit(e) {
         let that = this;
         e.preventDefault();

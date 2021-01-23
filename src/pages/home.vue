@@ -2,7 +2,7 @@
   <a-layout id="components-layout-demo-side" style="min-height: 100vh">
     <a-layout-sider v-model="collapsed" collapsible >
       <div class="home-logo" >
-        <my-icon type="icon-GULULU-suanningmeng" />
+        <!-- <my-icon type="icon-GULULU-suanningmeng" /> -->
         {{title}}
       </div>
       <div class="user-info">
@@ -103,7 +103,7 @@
   export default {
     data() {
       return {
-        subject: '简笔记',
+        subject: 'EasyNotes',
         user: this.db.get("USER"),
         collapsed: false,
         categorys:[],

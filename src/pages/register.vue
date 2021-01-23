@@ -18,7 +18,7 @@
               :headStyle="{ fontSize: '22px' }">
               <div class="logo">
                 <my-icon type="icon-GULULU-suanningmeng" />
-                简笔记
+                EasyNotes
               </div>
               <a-form :form="form" @submit="handleSubmit" class="login-form">
                 <a-form-item>
@@ -29,7 +29,10 @@
                           rules: [
                           {
                               required: true,
-                              message: '请输入账户!',
+                              min: 5,
+                              max: 20,
+                              message: '请输入账户名长度6-20!',
+                              type: string
                           },
                           ],
                       },
@@ -47,7 +50,10 @@
                           rules: [
                           {
                               required: true,
-                              message: 'Please input your password!',
+                              min: 8,
+                              max: 40,
+                              message: '请输入密码8-40!',
+                              type: string
                           },
                           {
                               validator: validateToNextPassword,
@@ -69,7 +75,10 @@
                           rules: [
                           {
                               required: true,
-                              message: '请输入确认密码!',
+                              min: 8,
+                              max: 40,
+                              message: '请输入密码确认密码!',
+                              type: string
                           },
                           {
                               validator: compareToFirstPassword,
@@ -89,12 +98,38 @@
                       v-decorator="[
                       'userName',
                       {
-                          rules: [{ required: true, message: '请输入昵称!', whitespace: true }],
+                          rules: [{ required: true,min:6,max:50, message: '请输入昵称6-50!', whitespace: true, type: string }],
                       },
                       ]"
                       placeholder="昵称"
                   >
                     <a-icon slot="prefix" type="smile" style="color: rgba(0,0,0,.25)" />
+                  </a-input>
+                </a-form-item>
+                <a-form-item>
+                  <a-input
+                      v-decorator="[
+                      'email',
+                      {
+                          rules: [{ required: true, message: '请输入邮件!', whitespace: true, type: email  }, {validator: this.validateMobileMail}],
+                      },
+                      ]"
+                      placeholder="邮件"
+                  >
+                    <a-icon slot="prefix" type="mail" style="color: rgba(0,0,0,.25)" />
+                  </a-input>
+                </a-form-item>
+                <a-form-item>
+                  <a-input
+                      v-decorator="[
+                      'phone',
+                      {
+                          rules: [{ required: true, message: '请输入手机!', whitespace: true ,type:number },{validator: this.validateMobilePhone}],
+                      },
+                      ]"
+                      placeholder="手机"
+                  >
+                    <a-icon slot="prefix" type="phone" style="color: rgba(0,0,0,.25)" />
                   </a-input>
                 </a-form-item>
                 <a-form-item>
@@ -138,8 +173,9 @@
             // 计算body可用高度
             let cHeight = window.outerHeight - (window.outerHeight - window.innerHeight)
             // 计算背景图
-            let imgs = ["http://resource.zealon.cn/01.jpg","http://resource.zealon.cn/02.jpg","http://resource.zealon.cn/03.jpg"]
-            let imgName = imgs[Math.floor(Math.random() * 3)]
+            // let imgs = ["http://resource.zealon.cn/01.jpg","http://resource.zealon.cn/02.jpg","http://resource.zealon.cn/03.jpg"]
+            // let imgName = imgs[Math.floor(Math.random() * 3)]
+            let imgName=this.getFileName()
             let style = "background-image:url('" + imgName + "'); background-repeat: round; height:" + cHeight + "px;";
             return style
         }
@@ -148,6 +184,9 @@
       this.form = this.$form.createForm(this, { name: 'register' });
     },
     methods: {
+        getFileName(){
+        return '/img/'+Math.floor(Math.random()*12 + 1)+'.jpg';
+    },  
       // 提交注册
       handleSubmit(e) {
         let that = this;
@@ -155,11 +194,22 @@
         this.form.validateFieldsAndScroll((err, values) => {
           if (!err) {
             this.loading = true;
-            this.postRequest('/register', values).then(resp => {
+            // this.postRequest('/register', values).then(resp => {
+            //   that.loading = false
+            //   if (resp && resp.code==200) {
+            //     that.db.save("USER", resp.data);
+            //     that.$router.replace('/home');
+            //   }else{
+            //     that.$message.info(resp.msg);
+            //   }
+            // })
+              this.postRequest('/enableUserByEmail', values).then(resp => {
+                console.log(values,111)
               that.loading = false
               if (resp && resp.code==200) {
-                that.db.save("USER", resp.data);
-                that.$router.replace('/home');
+                //that.db.save("USER", resp.data);
+                that.$message.info("注册成功，去邮箱激活账号吧！");
+                that.$router.replace('/');
               }else{
                 that.$message.info(resp.msg);
               }
@@ -176,6 +226,32 @@
         if (value && value !== form.getFieldValue('password')) {
           callback('两次密码不一致!');
         } else {
+          callback();
+        }
+      },
+      validateMobileMail(rule, value, callback){
+        if (value === '') {
+            callback(new Error('请正确填写邮箱'));
+        } else {
+              if (value !== '') { 
+                var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+              if(!reg.test(value)){
+                    callback(new Error('请输入有效的邮箱'));
+            }
+          }
+          callback();
+        }
+      },
+      validateMobilePhone (rule, value, callback){
+        if (value === '') {
+          callback(new Error('负责人手机号不可为空'));
+        } else {
+          if (value !== '') { 
+            var reg=/^1[3456789]\d{9}$/;
+            if(!reg.test(value)){
+              callback(new Error('请输入有效的手机号码'));
+            }
+          }
           callback();
         }
       },

@@ -7,6 +7,7 @@ Vue.use(VueRouter)
 const home = (resolve) => require(['@/pages/home.vue'], resolve)
 const my = (resolve) => require(['@/pages/home/my.vue'], resolve)
 const register = (resolve) => require(['@/pages/register.vue'], resolve)
+const emailverify = (resolve) => require(['@/pages/emailverify.vue'], resolve)
 const oauth2Callback = (resolve) => require(['@/pages/oauth2-callback.vue'], resolve)
 const login = (resolve) => require(['@/pages/login.vue'], resolve)
 const notesList = (resolve) => require(['@/pages/home/notes-list.vue'], resolve) 
@@ -49,6 +50,11 @@ const routes = [
 		path: '/register',
 		name: '注册',
 		component: register
+	},
+	{
+		path: '/emailVerify/:id/',
+		name: '激活邮箱',
+		component: emailverify
 	},
 	{
 		path: '/login/oauth2/callback/:clientId',

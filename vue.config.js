@@ -1,5 +1,5 @@
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
-const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
+//const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 const productionGzipExtensions = ['js', 'css'];
 
 module.exports = {
